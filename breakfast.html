@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakfast - Recipe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f7f3;
+            color: #333;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f8f7f3;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .main-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .main-section h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .recipe-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .recipe-card {
+            width: 300px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        .recipe-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .recipe-card h3 {
+            margin: 10px 0 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .recipe-card .info {
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Recipes - Breakfast</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="add-recipe.html">Add Recipe</a>
+        </nav>
+    </header>
+
+    <section class="main-section">
+        <h1>Entrees</h1>
+        <div class="recipe-cards">
+            <div class="recipe-card">
+                <img src="https://via.placeholder.com/300x200" alt="Recipe Image">
+                <h3>Grilled Vegetable Pasta</h3>
+                <p class="info">30 minutes - Easy</p>
+            </div>
+            <div class="recipe-card">
+                <img src="https://via.placeholder.com/300x200" alt="Recipe Image">
+                <h3>Spicy Tofu Stir-Fry</h3>
+                <p class="info">20 minutes - Medium</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

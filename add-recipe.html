@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            background-color: white;
+        }
+
+        .step-container, .ingredient-row {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .step-textarea {
+            flex-grow: 1;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .remove-step, .remove-ingredient {
+            background-color: #ff4444;
+            padding: 5px 10px;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            background-color: #666;
+            margin-bottom: 20px;
+        }
+
+        .ingredient-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ingredient-name {
+            flex: 2;
+        }
+
+        .ingredient-amount {
+            flex: 1;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .time-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-group .form-group {
+            flex: 1;
+        }
+
+        .step-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .step-image-preview {
+            max-width: 200px;
+            margin-top: 10px;
+        }
+
+        .step-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='index.html'">Back to Recipes</button>
+        <h1>Add New Recipe</h1>
+        
+        <form id="recipe-form">
+            <div class="form-group">
+                <label for="recipe-image">Recipe Photo</label>
+                <input type="file" id="recipe-image" accept="image/*" required>
+                <img id="image-preview" class="preview-image" style="display: none;">
+                <div class="loading">Uploading image...</div>
+                <div class="error-message" id="image-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="recipe-name">Recipe Name</label>
+                <input type="text" id="recipe-name" required minlength="3" maxlength="100">
+                <div class="error-message" id="name-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="recipe-description">Description</label>
+                <textarea id="recipe-description" rows="3" required minlength="10" maxlength="500"></textarea>
+                <div class="error-message" id="description-error"></div>
+            </div>
+
+            <div class="time-group">
+                <div class="form-group">
+                    <label for="recipe-prep-time">Prep Time (minutes)</label>
+                    <input type="number" id="recipe-prep-time" required min="1">
+                </div>
+                <div class="form-group">
+                    <label for="recipe-cook-time">Cook Time (minutes)</label>
+                    <input type="number" id="recipe-cook-time" required min="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="recipe-servings">Servings</label>
+                <input type="number" id="recipe-servings" required min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="recipe-difficulty">Difficulty</label>
+                <select id="recipe-difficulty" required>
+                    <option value="">Select difficulty</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="recipe-category">Category</label>
+                <select id="recipe-category" required>
+                    <option value="">Select a category</option>
+                    <option value="Entrees">Entrees</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Sides">Sides</option>
+                    <option value="Drinks">Drinks</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ingredients</label>
+                <div id="ingredients-container">
+                    <div class="ingredient-row">
+                        <input type="text" class="ingredient-name" placeholder="Ingredient" required>
+                        <input type="text" class="ingredient-amount" placeholder="Amount" required>
+                        <button type="button" class="remove-ingredient" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                </div>
+                <button type="button" onclick="addIngredient()">Add Ingredient</button>
+            </div>
+
+            <div class="form-group">
+                <label>Cooking Steps</label>
+                <div id="steps-container">
+                    <div class="step-container">
+                        <textarea class="step-textarea" placeholder="Enter step 1" rows="2" required></textarea>
+                        <div class="step-controls">
+                            <input type="file" class="step-image" accept="image/*" onchange="handleStepImage(this)">
+                            <button type="button" class="remove-step" onclick="this.parentElement.parentElement.remove()">Remove Step</button>
+                        </div>
+                        <img class="step-image-preview" style="display: none;">
+                    </div>
+                </div>
+                <button type="button" onclick="addStep()">Add Step</button>
+            </div>
+
+            <button type="submit">Save Recipe</button>
+            <p style="color: #ff69b4; font-style: italic; text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">PLEASE BUY ME NEW SHOES!</p>
+        </form>
+    </div>
+
+    <script>
+        let isEditing = false;
+        let editingRecipeId = null;
+
+        function loadExistingRecipe() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('edit') === 'true') {
+                const editingRecipe = JSON.parse(localStorage.getItem('editingRecipe'));
+                if (editingRecipe) {
+                    isEditing = true;
+                    editingRecipeId = editingRecipe.id;
+                    
+                    document.querySelector('h1').textContent = 'Edit Recipe';
+
+                    document.getElementById('recipe-name').value = editingRecipe.name;
+                    document.getElementById('recipe-description').value = editingRecipe.description;
+                    document.getElementById('recipe-prep-time').value = editingRecipe.prepTime;
+                    document.getElementById('recipe-cook-time').value = editingRecipe.cookTime;
+                    document.getElementById('recipe-servings').value = editingRecipe.servings;
+                    document.getElementById('recipe-difficulty').value = editingRecipe.difficulty;
+                    document.getElementById('recipe-category').value = editingRecipe.category;
+
+                    if (editingRecipe.image) {
+                        document.getElementById('image-preview').src = editingRecipe.image;
+                        document.getElementById('image-preview').style.display = 'block';
+                    }
+
+                    // Load ingredients
+                    const ingredientsContainer = document.getElementById('ingredients-container');
+                    ingredientsContainer.innerHTML = '';
+                    editingRecipe.ingredients.forEach(ingredient => {
+                        const ingredientDiv = document.createElement('div');
+                        ingredientDiv.className = 'ingredient-row';
+                        ingredientDiv.innerHTML = `
+                            <input type="text" class="ingredient-name" placeholder="Ingredient" value="${ingredient.name}" required>
+                            <input type="text" class="ingredient-amount" placeholder="Amount" value="${ingredient.amount}" required>
+                            <button type="button" class="remove-ingredient" onclick="this.parentElement.remove()">×</button>
+                        `;
+                        ingredientsContainer.appendChild(ingredientDiv);
+                    });
+
+                    // Load steps
+                    const stepsContainer = document.getElementById('steps-container');
+                    stepsContainer.innerHTML = '';
+                    editingRecipe.steps.forEach((step, index) => {
+                        const stepDiv = document.createElement('div');
+                        stepDiv.className = 'step-container';
+                        stepDiv.innerHTML = `
+                            <textarea class="step-textarea" rows="2" required>${step.text || step}</textarea>
+                            <div class="step-controls">
+                                <input type="file" class="step-image" accept="image/*" onchange="handleStepImage(this)">
+                                <button type="button" class="remove-step" onclick="this.parentElement.parentElement.remove()">Remove Step</button>
+                            </div>
+                            <img class="step-image-preview" style="display: ${step.image ? 'block' : 'none'}" src="${step.image || ''}">
+                        `;
+                        stepsContainer.appendChild(stepDiv);
+                    });
+                }
+            }
+        }
+
+        function handleStepImage(input) {
+            const preview = input.parentElement.nextElementSibling;
+            const file = input.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addIngredient() {
+            const container = document.getElementById('ingredients-container');
+            const ingredientDiv = document.createElement('div');
+            ingredientDiv.className = 'ingredient-row';
+            
+            ingredientDiv.innerHTML = `
+                <input type="text" class="ingredient-name" placeholder="Ingredient" required>
+                <input type="text" class="ingredient-amount" placeholder="Amount" required>
+                <button type="button" class="remove-ingredient" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            container.appendChild(ingredientDiv);
+        }
+
+        function addStep() {
+            const container = document.getElementById('steps-container');
+            const stepCount = container.children.length + 1;
+            
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step-container';
+            
+            stepDiv.innerHTML = `
+                <textarea class="step-textarea" placeholder="Enter step ${stepCount}" rows="2" required></textarea>
+                <div class="step-controls">
+                    <input type="file" class="step-image" accept="image/*" onchange="handleStepImage(this)">
+                    <button type="button" class="remove-step" onclick="this.parentElement.parentElement.remove()">Remove Step</button>
+                </div>
+                <img class="step-image-preview" style="display: none;">
+            `;
+            
+            container.appendChild(stepDiv);
+        }
+
+        document.getElementById('recipe-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const imageFile = document.getElementById('recipe-image').files[0];
+            const existingImage = document.getElementById('image-preview').src;
+
+            const saveRecipe = (imageData) => {
+                const recipe = {
+                    id: isEditing ? editingRecipeId : Date.now(),
+                    name: document.getElementById('recipe-name').value,
+                    description: document.getElementById('recipe-description').value,
+                    prepTime: document.getElementById('recipe-prep-time').value,
+                    cookTime: document.getElementById('recipe-cook-time').value,
+                    servings: document.getElementById('recipe-servings').value,
+                    difficulty: document.getElementById('recipe-difficulty').value,
+                    category: document.getElementById('recipe-category').value,
+                    image: imageData || existingImage,
+                    ingredients: Array.from(document.getElementsByClassName('ingredient-row'))
+                        .map(row => ({
+                            name: row.querySelector('.ingredient-name').value,
+                            amount: row.querySelector('.ingredient-amount').value
+                        })),
+                    steps: Array.from(document.getElementsByClassName('step-container'))
+                        .map(container => ({
+                            text: container.querySelector('.step-textarea').value,
+                            image: container.querySelector('.step-image-preview').src || null
+                        }))
+                };
+
+                try {
+                    let recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+                    
+                    if (isEditing) {
+                        const index = recipes.findIndex(r => r.id === recipe.id);
+                        if (index !== -1) {
+                            recipes[index] = recipe;
+                        }
+                    } else {
+                        recipes.push(recipe);
+                    }
+
+                    localStorage.setItem('recipes', JSON.stringify(recipes));
+                    localStorage.removeItem('editingRecipe');
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    alert('Error saving recipe. Please try again.');
+                    console.error('Error saving recipe:', error);
+                }
+            };
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => saveRecipe(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveRecipe(null);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadExistingRecipe);
+    </script>
+</body>
+</html>
